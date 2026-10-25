@@ -1,6 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "minilytics",
+  "account_id": "6781463cd862c4c93076626a02f1aa18",
+  "workers_dev": true,
   "main": "src/worker/index.ts",
   "compatibility_date": "2025-09-01",
   "observability": { "enabled": true },
@@ -15,8 +17,7 @@
     {
       "binding": "DB",
       "database_name": "minilytics",
-      // Replace with the id printed by `npx wrangler d1 create minilytics`.
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "25347fe6-d75a-41ed-a395-711e6d34fc71",
       "migrations_dir": "migrations"
     }
   ]
