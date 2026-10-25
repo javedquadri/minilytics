@@ -1,5 +1,5 @@
 import type { Context } from 'hono';
-import { getSite, type AppEnv, type Site } from './env';
+import { type AppEnv, type Site } from './env';
 import { verifyStandardWebhook } from './lib/crypto';
 
 export function currencyDecimals(currency: string): number {
@@ -231,7 +231,10 @@ function pickMeta(meta: Record<string, unknown> | undefined, keys: string[]): st
 
 /** Dodo Payments webhook: POST /api/webhooks/dodo/:siteId */
 export async function handleDodoWebhook(c: Context<AppEnv>) {
-  const site = await getSite(c.env.DB, c.req.param('siteId')!);
+  // Other isolates can retain cached settings after a secret is configured or rotated.
+  const site = await c.env.DB.prepare('SELECT * FROM sites WHERE id = ?')
+    .bind(c.req.param('siteId')!)
+    .first<Site>();
   if (!site) return c.json({ error: 'unknown site' }, 404);
   if (!site.dodo_webhook_secret) return c.json({ error: 'webhook secret not configured for this site' }, 400);
 
